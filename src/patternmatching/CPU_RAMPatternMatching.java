@@ -1,9 +1,13 @@
+package patternmatching;
+
+import records.Result;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CPU_RAMPatternMatching {
-    static Result getResult(ArrayList<String> tokens, int[] registers, byte[] stack,  int index) throws Exception {
+    public static Result getResult(ArrayList<String> tokens, int[] registers, byte[] stack, int index) throws Exception {
         if(!checkPattern(tokens.get(1), "x")) {
             throw new Exception("line: " + index + ": First argument of " + tokens.getFirst() + " must be a register");
         }
@@ -24,8 +28,7 @@ public class CPU_RAMPatternMatching {
         return new Result(register, pointer);
     }
 
-
-     static boolean checkPattern(String s, String pattern2) {
+     public static boolean checkPattern(String s, String pattern2) {
         String regex = "";
         if (pattern2.equals("(")) {
             regex = "\\d+\\((x\\d+)\\)";

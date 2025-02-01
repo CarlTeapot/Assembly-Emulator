@@ -1,12 +1,16 @@
+package processing;
+
+import constants.EmulatorConstants;
+import patternmatching.CPU_RAMPatternMatching;
+import records.Result;
+
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class AssemblyStore implements EmulatorConstants{
+public class AssemblyStore implements EmulatorConstants {
 
 
-    static void store(ArrayList<String> tokens, int[] registers, byte[] stack,
-                      int index) throws Exception {
+    public static void store(ArrayList<String> tokens, int[] registers, byte[] stack,
+                             int index) throws Exception {
         String store = tokens.getFirst();
         if (tokens.size() != 3) {
             throw new Exception("line: " + index + ": Invalid number of arguments for " + tokens.getFirst() + ". expected 3, got " + tokens.size());
@@ -36,7 +40,4 @@ public class AssemblyStore implements EmulatorConstants{
             stack[pointer - i] = (byte) ((value >> (8 * i)) & 0xFF);
         }
     }
-
-
-
 }

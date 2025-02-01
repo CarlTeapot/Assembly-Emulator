@@ -1,3 +1,5 @@
+package records;
+
 public record Result(int register, int pointer){
     public int pointer() {
         return pointer;
@@ -6,4 +8,6 @@ public record Result(int register, int pointer){
         return register;
     }
 };
+
+;
 

@@ -1,15 +1,19 @@
+import constants.EmulatorConstants;
+import processing.AssemblyALU;
+import processing.AssemblyBranch;
+import processing.AssemblyLoad;
+import processing.AssemblyStore;
+import records.BranchResult;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
-public class AssemblyEmulator implements EmulatorConstants{
+public class AssemblyEmulator implements EmulatorConstants {
     private final String filepath;
     private final List<String> instructions;
-
+    private final Map<String, Integer> labels;
     private int stackSize;
     private final ArrayList<String> tokens;
     private final int[] registers;
@@ -19,10 +23,10 @@ public class AssemblyEmulator implements EmulatorConstants{
         this.filepath = filepath;
         instructions = new ArrayList<>();
         tokens = new ArrayList<>();
+        labels = new HashMap<>();
         registers = new int[32];
         stack = new byte[stackSize];
-        instructions.add("addi sp sp " + stackSize/2);
-
+        registers[2] = stackSize/2;
         readInstructionsFromFile();
     }
     private void readInstructionsFromFile() {
@@ -35,38 +39,71 @@ public class AssemblyEmulator implements EmulatorConstants{
                 if (line.contains("#")) line = line.substring(0, line.indexOf("#"));
                 instructions.add(line.trim()); // Trim whitespace and add to the list
             }
+
         } catch (IOException e) {
             System.err.println("Error reading the file: " + e.getMessage());
         }
+
     }
     public void process() throws Exception {
-        for (int i = 0; i < instructions.size(); i++) {
-            processSingleLine(instructions.get(i), i);
+        for (int i = 0; i < instructions.size();i++) {
+            st = new StringTokenizer(instructions.get(i), " ");
+            while(st.hasMoreTokens()) {
+                tokens.add(st.nextToken());
+            }
+            if (tokens.size() == 1 && tokens.getFirst().contains(":")) {
+                labels.put(tokens.getFirst().substring(0, tokens.getFirst().length()-1), i);
+            }
+            tokens.clear();
         }
+        int i = 0;
+        while (i != instructions.size()) {
+            System.out.println(instructions.get(i));
+            processSingleLine(instructions.get(i), i);
+            i++;
+        }
+
     }
+
     private void processSingleLine(String s, int index) throws Exception {
         st = new StringTokenizer(s, " ");
         while(st.hasMoreTokens()) {
             tokens.add(st.nextToken());
         }
         replaceRegisters(tokens);
+        BranchResult result;
         if (Arrays.asList(load).contains(tokens.getFirst()))
             AssemblyLoad.load(tokens,registers,stack,index+1);
         else if (Arrays.asList(store).contains(tokens.getFirst()))
             AssemblyStore.store(tokens,registers,stack,index+1);
         else if (Arrays.asList(alu).contains(tokens.getFirst()))
             AssemblyALU.arithmetic(tokens,registers, index+1);
+        else if (Arrays.asList(branch).contains(tokens.getFirst()))
+           result = AssemblyBranch.Branch(tokens,registers, labels,index+1);
+        else if (tokens.getFirst().equals("print")) {
+            print(tokens.get(1));
+        }
         tokens.clear();
     }
 
+
+
+
+
+
+    private void print(String s) throws Exception {
+        if (!s.matches("x\\d+"))
+            throw new Exception("Invalid register number");
+        System.out.println(registers[AssemblyALU.extractRegister(s)]);
+    }
     private void replaceRegisters(ArrayList<String> tokens) {
         for (int i = 1; i < tokens.size(); i++) {
             tokens.set(i,tokens.get(i).replaceAll("sp", "x2"));
             tokens.set(i,tokens.get(i).replaceAll("ra", "x1"));
             tokens.set(i,tokens.get(i).replaceAll("zero", "x0"));
-
         }
     }
+
     public int getRegisterValue(int index) {
         return registers[index];
     }
@@ -77,11 +114,27 @@ public class AssemblyEmulator implements EmulatorConstants{
         return stack[registers[2]];
     }
 
-    public int generateValue(int pointer, int size) {
+
+    public int getStackValue(int pointer, int size) {
         int value = 0;
         for (int i = 0; i < size; i++) {
             value |= (stack[pointer + i] & 0xFF) << (8 * i);
         }
         return value;
+    }
+    public void printAllRegisters() {
+        for (int i = 0; i < registers.length; i++) {
+            System.out.println("x" + i + ": " + registers[i]);
+        }
+    }
+    public void printStack() {
+        for (int i = 0; i < stack.length; i++) {
+            System.out.println("stack[" + i + "]: " + stack[i]);
+        }
+    }
+    public void printLabels() {
+        for (Map.Entry<String, Integer> entry : labels.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
     }
 }

@@ -1,10 +1,16 @@
+package processing;
+
+import constants.EmulatorConstants;
+import patternmatching.CPU_RAMPatternMatching;
+import records.Result;
+
 import java.util.ArrayList;
 
 
-public class AssemblyLoad implements EmulatorConstants{
+public class AssemblyLoad implements EmulatorConstants {
 
-    static void load(ArrayList<String> tokens, int[] registers, byte[] stack,
-                      int index) throws Exception {
+    public static void load(ArrayList<String> tokens, int[] registers, byte[] stack,
+                            int index) throws Exception {
         String load = tokens.getFirst();
         if (tokens.size() != 3) {
             throw new Exception("line: " + index + ": Invalid number of arguments for " + tokens.getFirst() + ". expected 3, got " + tokens.size());
@@ -51,7 +57,4 @@ public class AssemblyLoad implements EmulatorConstants{
         }
         return value;
     }
-
-
-
 }
