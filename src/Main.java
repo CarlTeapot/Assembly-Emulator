@@ -1,14 +1,22 @@
+import javax.annotation.processing.SupportedSourceVersion;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello world!");
-        AssemblyEmulator emulator = new AssemblyEmulator("src/instructions.txt", 5000);
+        System.out.println("Welcome to my assembly emulator");
+        System.out.println("I dont recommend using the following registers to store values: ");
+        System.out.println("X0: Zero register");
+        System.out.println("X1: Return address register");
+        System.out.println("X2: Stack pointer register");
+
+        AssemblyEmulator emulator = new AssemblyEmulator("src/instructions.txt", 5001);
         emulator.process();
-        System.out.println(emulator.getRegisterValue(10));
-        int value = 0;
-        for (int i = 0; i < 4; i++) {
-            value |= (emulator.getStackValue(4999 - i) & 0xFF) << (8 * i);
+
+        int sp = emulator.getRegisterValue(2);
+
+
+        for (int i = 5; i < 25; i++) {
+            System.out.println("Register x" + i + ": " + emulator.getRegisterValue(i));
         }
-        System.out.println(value);
+
     }
 }

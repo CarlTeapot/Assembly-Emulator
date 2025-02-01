@@ -3,7 +3,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CPU_RAMPatternMatching {
-    static Result getResult(ArrayList<String> tokens, int[] registers, byte[] stack, int stackPointer, int index) throws Exception {
+    static Result getResult(ArrayList<String> tokens, int[] registers, byte[] stack,  int index) throws Exception {
         if(!checkPattern(tokens.get(1), "x")) {
             throw new Exception("line: " + index + ": First argument of " + tokens.getFirst() + " must be a register");
         }
@@ -12,9 +12,7 @@ public class CPU_RAMPatternMatching {
         }
         int register = Integer.parseInt(tokens.get(1).substring(1));
         int offset = tokens.get(2).charAt(0) - '0';
-        int pointer = stackPointer;
-        if (tokens.get(2).charAt(2) == 'x')
-            pointer = registers[Integer.parseInt(tokens.get(2).substring(3, tokens.get(2).length() - 1))];
+        int pointer = registers[2];
         pointer += offset;
 
         if (register < 0 || register >= registers.length) {
@@ -30,7 +28,7 @@ public class CPU_RAMPatternMatching {
      static boolean checkPattern(String s, String pattern2) {
         String regex = "";
         if (pattern2.equals("(")) {
-            regex = "\\d+\\((sp|x\\d+)\\)";
+            regex = "\\d+\\((x\\d+)\\)";
         }
         if (pattern2.equals("x"))
             regex = "x\\d+";

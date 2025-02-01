@@ -5,25 +5,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.stream.IntStream;
 
 public class AssemblyEmulator implements EmulatorConstants{
     private final String filepath;
     private final List<String> instructions;
 
-    private int stackPointer;
+    private int stackSize;
     private final ArrayList<String> tokens;
     private final int[] registers;
     private final byte[] stack;
     StringTokenizer st;
     public AssemblyEmulator(String filepath, int stackSize) {
-        stackPointer = 0;
         this.filepath = filepath;
         instructions = new ArrayList<>();
         tokens = new ArrayList<>();
         registers = new int[32];
         stack = new byte[stackSize];
-        stackPointer = stackSize - 1;
+        instructions.add("addi sp sp " + stackSize/2);
 
         readInstructionsFromFile();
     }
@@ -31,6 +29,10 @@ public class AssemblyEmulator implements EmulatorConstants{
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String line;
             while ((line = br.readLine()) != null) {
+                line = line.replaceAll(",", "");
+                if (line.trim().isEmpty()) continue; // Skip empty lines
+                if (line.charAt(0) == '#') continue; // Skip comments
+                if (line.contains("#")) line = line.substring(0, line.indexOf("#"));
                 instructions.add(line.trim()); // Trim whitespace and add to the list
             }
         } catch (IOException e) {
@@ -47,15 +49,23 @@ public class AssemblyEmulator implements EmulatorConstants{
         while(st.hasMoreTokens()) {
             tokens.add(st.nextToken());
         }
+        replaceRegisters(tokens);
         if (Arrays.asList(load).contains(tokens.getFirst()))
-            AssemblyLoad.load(tokens,registers,stack,stackPointer, index);
+            AssemblyLoad.load(tokens,registers,stack,index+1);
         else if (Arrays.asList(store).contains(tokens.getFirst()))
-            AssemblyStore.store(tokens,registers,stack,stackPointer, index);
-        else if (Arrays.asList(arithmetic).contains(tokens.getFirst()))
-            AssemblyArithmetic.arithmetic(tokens,registers, index);
-
-
+            AssemblyStore.store(tokens,registers,stack,index+1);
+        else if (Arrays.asList(alu).contains(tokens.getFirst()))
+            AssemblyALU.arithmetic(tokens,registers, index+1);
         tokens.clear();
+    }
+
+    private void replaceRegisters(ArrayList<String> tokens) {
+        for (int i = 1; i < tokens.size(); i++) {
+            tokens.set(i,tokens.get(i).replaceAll("sp", "x2"));
+            tokens.set(i,tokens.get(i).replaceAll("ra", "x1"));
+            tokens.set(i,tokens.get(i).replaceAll("zero", "x0"));
+
+        }
     }
     public int getRegisterValue(int index) {
         return registers[index];
@@ -64,6 +74,14 @@ public class AssemblyEmulator implements EmulatorConstants{
         return stack[index];
     }
     public byte getStackValue() {
-        return stack[stackPointer];
+        return stack[registers[2]];
+    }
+
+    public int generateValue(int pointer, int size) {
+        int value = 0;
+        for (int i = 0; i < size; i++) {
+            value |= (stack[pointer + i] & 0xFF) << (8 * i);
+        }
+        return value;
     }
 }

@@ -1,2 +1,31 @@
-li x10 15000
-sw x10 0(sp)
+
+    addi sp, sp, -32    # Adjust stack pointer
+
+    li x10, 60          # Load immediate value 60 into x10
+    li x11, 15          # Load immediate value 15 into x11
+    
+    sll x12, x10, x11   # x12 = x10 << x11 (Shift left logical)
+    slli x13, x10, 3    # x13 = x10 << 3 (Shift left logical by 3)
+    srl x14, x10, x11   # x14 = x10 >> x11 (Shift right logical)
+    srli x15, x10, 2    # x15 = x10 >> 2 (Shift right logical by 2)
+    srai x16, x10, 2    # x16 = x10 >> 2 (Shift right arithmetic)
+
+    xor x17, x10, x11   # x17 = x10 ^ x11 (Bitwise XOR)
+    xori x18, x10, 255 # x18 = x10 ^ 0xFF (Bitwise XOR with immediate value)
+    
+    xori x19, x10, -1   # x19 = x10 ^ -1 (Bitwise XOR with -1)
+    
+    and x20, x10, x11   # x20 = x10 & x11 (Bitwise AND)
+    andi x21, x10, 240 # x21 = x10 & 0xF0 (Bitwise AND with immediate value)
+    
+    or x22, x10, x11   # x22 = x10 | x11 (Bitwise OR)
+
+    sw x12, 0(sp)        # Store word from x12 into memory at sp
+    sw x13, 4(sp)        # Store word from x13 into memory at sp + 4
+    sw x14, 8(sp)        # Store word from x14 into memory at sp + 8
+    sw x15, 12(sp)       # Store word from x15 into memory at sp + 12
+    sw x16, 16(sp)       # Store word from x16 into memory at sp + 16
+    sw x17, 20(sp)       # Store word from x17 into memory at sp + 20
+    sw x18, 24(sp)       # Store word from x18 into memory at sp + 24
+
+   // addi sp, sp, 32      # Restore stack pointer
