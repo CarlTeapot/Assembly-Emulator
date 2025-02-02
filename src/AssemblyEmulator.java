@@ -16,7 +16,9 @@ public class AssemblyEmulator implements EmulatorConstants {
     private final byte[] stack;
     private final byte[] heap;
     StringTokenizer st;
+
     public AssemblyEmulator(String filepath, int stackSize) {
+        printWelcome();
         this.filepath = filepath;
         instructions = new ArrayList<>();
         tokens = new ArrayList<>();
@@ -24,9 +26,10 @@ public class AssemblyEmulator implements EmulatorConstants {
         registers = new int[32];
         stack = new byte[stackSize];
         heap = new byte[4 * stackSize];
-        registers[2] = stackSize/2;
+        registers[2] = stackSize / 2;
         readInstructionsFromFile();
     }
+
     private void readInstructionsFromFile() {
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String line;
@@ -41,54 +44,55 @@ public class AssemblyEmulator implements EmulatorConstants {
         } catch (IOException e) {
             System.err.println("Error reading the file: " + e.getMessage());
         }
-        for (int i = 0; i < instructions.size();i++) {
+        for (int i = 0; i < instructions.size(); i++) {
             st = new StringTokenizer(instructions.get(i), " ");
-            while(st.hasMoreTokens()) {
+            while (st.hasMoreTokens()) {
                 tokens.add(st.nextToken());
             }
             if (tokens.size() == 1 && tokens.getFirst().contains(":")) {
-                labels.put(tokens.getFirst().substring(0, tokens.getFirst().length()-1), i);
+                labels.put(tokens.getFirst().substring(0, tokens.getFirst().length() - 1), i);
             }
             tokens.clear();
         }
 
     }
+
     public void process() throws Exception {
         int i = 0;
         while (i != instructions.size()) {
-            int x = processSingleLine(instructions.get(i), i);
+            String s = replaceRegisters(instructions.get(i));
+            int x = processSingleLine(s, i);
             if (x == -1) i++;
             else i = x;
-            if (x== -2)
+            if (x == -2)
                 break;
         }
 
     }
+
     private int processSingleLine(String s, int index) throws Exception {
-        st = new StringTokenizer(s, " ");
-        while(st.hasMoreTokens()) {
+  //      System.out.println(AssemblyLoad.generateValue(stack, sp, 4));
+        st = new StringTokenizer(s," ");
+        while (st.hasMoreTokens()) {
             tokens.add(st.nextToken());
         }
-        replaceRegisters(tokens);
         int result;
         if (Arrays.asList(load).contains(tokens.getFirst()))
-            AssemblyLoad.load(tokens,registers,stack,index);
+            AssemblyLoad.load(tokens, registers, stack, heap, index);
         else if (Arrays.asList(store).contains(tokens.getFirst()))
-            AssemblyStore.store(tokens,registers,stack,index);
+            AssemblyStore.store(tokens, registers, stack, heap, index);
         else if (Arrays.asList(alu).contains(tokens.getFirst()))
-            AssemblyALU.arithmetic(tokens,registers, index);
+            AssemblyALU.arithmetic(tokens, registers, index);
         else if (Arrays.asList(branch).contains(tokens.getFirst())) {
             result = AssemblyBranch.Branch(tokens, registers, labels, index);
             tokens.clear();
             return result;
-        }
-        else if (Arrays.asList(jumps).contains(tokens.getFirst())) {
+        } else if (Arrays.asList(jumps).contains(tokens.getFirst())) {
             result = AssemblyJump.processJump(tokens, index, registers, labels);
             tokens.clear();
             return result;
-        }
-        else if (Arrays.asList(EmulatorConstants.heap).contains(tokens.getFirst())) {
-            AssemblyHeap.heap(tokens, index, registers, heap);
+        } else if (Arrays.asList(EmulatorConstants.heap).contains(tokens.getFirst())) {
+            AssemblyHeap.heap(tokens, index, registers);
         }
         if (tokens.getFirst().equals("ecall")) {
             print(tokens.get(1));
@@ -103,26 +107,30 @@ public class AssemblyEmulator implements EmulatorConstants {
         tokens.clear();
         return -1;
     }
+
     private void print(String s) throws Exception {
         if (!s.matches("x\\d+"))
             throw new Exception("Invalid register number");
         System.out.println(registers[AssemblyALU.extractRegister(s)]);
     }
-    private void replaceRegisters(ArrayList<String> tokens) {
-        for (int i = 1; i < tokens.size(); i++) {
-            tokens.set(i,tokens.get(i).replaceAll("sp", "x2"));
-            tokens.set(i,tokens.get(i).replaceAll("ra", "x1"));
-            tokens.set(i,tokens.get(i).replaceAll("zero", "x0"));
-            tokens.set(i,tokens.get(i).replaceAll("gp", "x3"));
-        }
+
+    private String replaceRegisters(String s) {
+
+        s = s.replaceAll("sp", "x2");
+        s = s.replaceAll("ra", "x1");
+        s = s.replaceAll("zero", "x0");
+        s = s.replaceAll("gp", "x3");
+        return s;
     }
 
     public int getRegisterValue(int index) {
         return registers[index];
     }
+
     public byte getStackValue(int index) {
         return stack[index];
     }
+
     public byte getStackValue() {
         return stack[registers[sp]];
     }
@@ -135,19 +143,34 @@ public class AssemblyEmulator implements EmulatorConstants {
         }
         return value;
     }
+
     public void printAllRegisters() {
         for (int i = 0; i < registers.length; i++) {
             System.out.println("x" + i + ": " + registers[i]);
         }
     }
+
     public void printStack() {
         for (int i = 0; i < stack.length; i++) {
             System.out.println("stack[" + i + "]: " + stack[i]);
         }
     }
+
     public void printLabels() {
         for (Map.Entry<String, Integer> entry : labels.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
+    }
+
+    public void printWelcome() {
+        System.out.println("Welcome to my Assembly emulator");
+        System.out.println("I dont recommend using the following registers to store values: ");
+        System.out.println("X0: Zero register");
+        System.out.println("X1: Return address register");
+        System.out.println("X2: Stack pointer register");
+        System.out.println("X3: Global pointer register");
+        System.out.println("Beware, if you separate instructions with empty lines, the emulator will work fine \n" +
+                "but if your code has a problem and exception is thrown, the numbering of the lines will be incorrect" +
+                "(it may tell you that program crashed because of line 23, but in reality it is line 30");
     }
 }

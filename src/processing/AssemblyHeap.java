@@ -4,34 +4,26 @@ import constants.EmulatorConstants;
 import java.util.ArrayList;
 
 public class AssemblyHeap implements EmulatorConstants {
-    public static void heap(ArrayList<String> tokens, int index, int[] registers, byte[] heap) {
-        switch (tokens.get(0)){
-            case "malloc" -> malloc(tokens,index, registers, heap);
-            case "free" -> free();
+    public static void heap(ArrayList<String> tokens, int index, int[] registers) {
+        check(tokens, index);
+        switch (tokens.getFirst()){
+            case "malloc" -> malloc(tokens,index, registers);
+            case "free" -> free(tokens, registers);
         }
     }
-    private static void malloc(ArrayList<String> tokens, int index, int[] registers, byte[] heap) {
-        check(tokens);
+    private static void malloc(ArrayList<String> tokens, int index, int[] registers) {
         int x = Integer.parseInt(tokens.get(1).substring(1));
 
         int tmp = registers[x];
-        // make the given register point to the memory in heap
         registers[x] = registers[gp];
-        // increase the global pointer
-        registers[gp] += registers[x];
+        registers[gp] += tmp;
     }
-    private static void free(ArrayList<String> tokens, int index, int[] registers, byte[] heap) {
-        check(tokens);
-
+    private static void free(ArrayList<String> tokens, int[] registers) {
         int x = Integer.parseInt(tokens.get(1).substring(1));
-
         registers[sp] -= x;
 
     }
-
-
-
-    private static void check(ArrayList<String> tokens) {
+    private static void check(ArrayList<String> tokens, int index) {
         if (tokens.size() != 2) {
             throw new IllegalArgumentException("line: " + (index + 1) + ": Invalid number of arguments for " + tokens.getFirst() + ". expected 3, got " + tokens.size());
         }
