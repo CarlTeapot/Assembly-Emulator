@@ -1,9 +1,0 @@
-li x10, 5        # Initialize x10 to 5 (loop counter)
-li x11 2
-li x12 0
-loop_start:
-    beq x10, x11, loop_end   # If x10 == 0, exit the loop
-    addi x10, x10, -1        # Decrement x10 by 1
-    addi x12 x12 1
-    j loop_start             # Jump to the start of the loop
-loop_end:

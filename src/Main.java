@@ -11,7 +11,7 @@ public class Main {
                 "but if your code has a problem and exception is thrown, the numbering of the lines will be incorrect" +
                 "(it may tell you that program crashed because of line 23, but in reality it is line 30");
 
-        AssemblyEmulator emulator = new AssemblyEmulator("Jump_test.txt", 5001);
+        AssemblyEmulator emulator = new AssemblyEmulator("recursion.txt", 5001);
         emulator.process();
         int sp = emulator.getRegisterValue(2);
         emulator.printAllRegisters();

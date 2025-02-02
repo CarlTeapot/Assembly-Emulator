@@ -1,0 +1,22 @@
+main:
+    li x10, 9       # Load n = 6 into x10
+    call factorial  # Call factorial function
+    li x11 5
+    end
+factorial:
+    li x11, 1       # Base case: if (n <= 1), return 1
+    ble x10, x11, base_case
+    addi sp, sp, -8  # Allocate stack space
+    sw ra, 0(sp)     # Save return address
+    sw x10, 4(sp)    # Save original n
+    addi x10, x10, -1  # n = n - 1
+    call factorial     # Recursive call: factorial(n - 1)
+    lw x12, 4(sp)    # Restore original n (from before recursion)
+    lw ra, 0(sp)     # Restore return address
+    addi sp, sp, 8   # Deallocate stack space
+    mul x10, x10, x12 # x10 = x10 * n
+    ret              # Return
+base_case:
+    li x10, 1        # Return 1 for factorial(0) or factorial(1)
+    print x10
+    ret

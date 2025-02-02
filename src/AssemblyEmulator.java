@@ -49,6 +49,7 @@ public class AssemblyEmulator implements EmulatorConstants {
             }
             tokens.clear();
         }
+
     }
     public void process() throws Exception {
         int i = 0;
@@ -56,7 +57,10 @@ public class AssemblyEmulator implements EmulatorConstants {
             int x = processSingleLine(instructions.get(i), i);
             if (x == -1) i++;
             else i = x;
+            if (x== -2)
+                break;
         }
+
     }
     private int processSingleLine(String s, int index) throws Exception {
         st = new StringTokenizer(s, " ");
@@ -81,12 +85,15 @@ public class AssemblyEmulator implements EmulatorConstants {
             tokens.clear();
             return result;
         }
-        if (tokens.getFirst().equals("print")) {
+        if (tokens.getFirst().equals("ecall")) {
             print(tokens.get(1));
         }
         if (tokens.getFirst().equals("ret")) {
             tokens.clear();
             return registers[ra]; //return address
+        }
+        if (tokens.getFirst().equals("end")) {
+            return -2;
         }
         tokens.clear();
         return -1;
