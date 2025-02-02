@@ -3,6 +3,7 @@ package processing;
 import constants.EmulatorConstants;
 import patternmatching.CPU_RAMPatternMatching;
 import records.Result;
+
 import java.util.ArrayList;
 
 public class AssemblyStore implements EmulatorConstants {
@@ -13,17 +14,17 @@ public class AssemblyStore implements EmulatorConstants {
         if (tokens.size() != 3) {
             throw new Exception("line: " + index + ": Invalid number of arguments for " + tokens.getFirst() + ". expected 3, got " + tokens.size());
         }
-        Result result = CPU_RAMPatternMatching.getResult(tokens, registers, stack.length, heap.length,  index);
+        Result result = CPU_RAMPatternMatching.getResult(tokens, registers, stack.length, heap.length, index);
         byte[] xd = stack;
-        int pntr = Integer.parseInt(tokens.get(2).substring(tokens.get(2).indexOf('x') + 1, tokens.get(2).length()-1));
+        int pntr = Integer.parseInt(tokens.get(2).substring(tokens.get(2).indexOf('x') + 1, tokens.get(2).length() - 1));
 
         if (pntr == 3)
             xd = heap;
         int value = registers[result.register()];
         switch (store) {
-            case "sh" -> storeValue(xd, value, result.pointer() ,2);
-            case "sb" -> storeValue(xd, value, result.pointer() ,1);
-            case "sw" -> storeValue(xd, value, result.pointer() ,4);
+            case "sh" -> storeValue(xd, value, result.pointer(), 2);
+            case "sb" -> storeValue(xd, value, result.pointer(), 1);
+            case "sw" -> storeValue(xd, value, result.pointer(), 4);
         }
     }
 

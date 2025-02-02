@@ -1,7 +1,9 @@
 package processing;
+
 import constants.EmulatorConstants;
 import patternmatching.CPU_RAMPatternMatching;
 import records.Result;
+
 import java.util.ArrayList;
 
 
@@ -19,7 +21,7 @@ public class AssemblyLoad implements EmulatorConstants {
         }
         Result result = CPU_RAMPatternMatching.getResult(tokens, registers, stack.length, heap.length, index);
         byte[] xd = stack;
-        int pntr = Integer.parseInt(tokens.get(2).substring(tokens.get(2).indexOf('x') + 1, tokens.get(2).length()-1));
+        int pntr = Integer.parseInt(tokens.get(2).substring(tokens.get(2).indexOf('x') + 1, tokens.get(2).length() - 1));
         if (pntr == 3)
             xd = heap;
 
@@ -33,6 +35,7 @@ public class AssemblyLoad implements EmulatorConstants {
         System.out.println("register: " + value);
 
     }
+
     private static void loadImmediate(ArrayList<String> tokens, int[] registers, int index) throws Exception {
         if (tokens.getFirst().equals("addi") &&
                 !((Character.isDigit(tokens.get(2).charAt(0)) || tokens.get(2).charAt(0) == '-')

@@ -20,7 +20,8 @@ public class BranchPatternMatching {
             throw new IllegalArgumentException("Invalid jump from branch " + tokens.get(3));
         }
     }
+
     static boolean checkPattern(String s) {
-            return s.matches("x\\d+");
+        return s.matches("x\\d+");
     }
 }

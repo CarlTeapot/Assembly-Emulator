@@ -10,7 +10,6 @@ public class AssemblyEmulator implements EmulatorConstants {
     private final String filepath;
     private final List<String> instructions;
     private final Map<String, Integer> labels;
-    private int stackSize;
     private final ArrayList<String> tokens;
     private final int[] registers;
     private final byte[] stack;
@@ -71,8 +70,8 @@ public class AssemblyEmulator implements EmulatorConstants {
     }
 
     private int processSingleLine(String s, int index) throws Exception {
-  //      System.out.println(AssemblyLoad.generateValue(stack, sp, 4));
-        st = new StringTokenizer(s," ");
+        //      System.out.println(AssemblyLoad.generateValue(stack, sp, 4));
+        st = new StringTokenizer(s, " ");
         while (st.hasMoreTokens()) {
             tokens.add(st.nextToken());
         }
@@ -122,6 +121,7 @@ public class AssemblyEmulator implements EmulatorConstants {
         s = s.replaceAll("gp", "x3");
         return s;
     }
+
 
     public int getRegisterValue(int index) {
         return registers[index];
