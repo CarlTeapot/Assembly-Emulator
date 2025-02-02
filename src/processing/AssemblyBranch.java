@@ -9,7 +9,7 @@ public class AssemblyBranch {
     public static int Branch(ArrayList<String> tokens, int[] registers, Map<String,Integer> labels, int index) throws Exception {
         String branch = tokens.getFirst();
         if (tokens.size() != 4) {
-            throw new Exception("line: " + index + ": Invalid number of arguments for " + tokens.getFirst() + ". expected 3, got " + tokens.size());
+            throw new Exception("line: " + (index + 1) +": Invalid number of arguments for " + tokens.getFirst() + ". expected 3, got " + tokens.size());
         }
         BranchPatternMatching.checkInstruction(tokens, labels, index);
         switch (branch) {

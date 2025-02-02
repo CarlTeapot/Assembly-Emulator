@@ -23,9 +23,6 @@ public class BranchPatternMatching {
         }
     }
     static boolean checkPattern(String s) {
-        String regex = "x\\d+";  // Allow registers like "x10" and also "sp"
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(s);
-        return matcher.matches();
+            return s.matches("x\\d+");
     }
 }

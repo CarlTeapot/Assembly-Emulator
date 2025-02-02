@@ -14,6 +14,7 @@ public class AssemblyEmulator implements EmulatorConstants {
     private final ArrayList<String> tokens;
     private final int[] registers;
     private final byte[] stack;
+    private final byte[] heap;
     StringTokenizer st;
     public AssemblyEmulator(String filepath, int stackSize) {
         this.filepath = filepath;
@@ -22,6 +23,7 @@ public class AssemblyEmulator implements EmulatorConstants {
         labels = new HashMap<>();
         registers = new int[32];
         stack = new byte[stackSize];
+        heap = new byte[4 * stackSize];
         registers[2] = stackSize/2;
         readInstructionsFromFile();
     }
@@ -70,20 +72,23 @@ public class AssemblyEmulator implements EmulatorConstants {
         replaceRegisters(tokens);
         int result;
         if (Arrays.asList(load).contains(tokens.getFirst()))
-            AssemblyLoad.load(tokens,registers,stack,index+1);
+            AssemblyLoad.load(tokens,registers,stack,index);
         else if (Arrays.asList(store).contains(tokens.getFirst()))
-            AssemblyStore.store(tokens,registers,stack,index+1);
+            AssemblyStore.store(tokens,registers,stack,index);
         else if (Arrays.asList(alu).contains(tokens.getFirst()))
-            AssemblyALU.arithmetic(tokens,registers, index+1);
+            AssemblyALU.arithmetic(tokens,registers, index);
         else if (Arrays.asList(branch).contains(tokens.getFirst())) {
-            result = AssemblyBranch.Branch(tokens, registers, labels, index + 1);
+            result = AssemblyBranch.Branch(tokens, registers, labels, index);
             tokens.clear();
             return result;
         }
         else if (Arrays.asList(jumps).contains(tokens.getFirst())) {
-            result = AssemblyJump.processJump(tokens, index + 1, registers, labels);
+            result = AssemblyJump.processJump(tokens, index, registers, labels);
             tokens.clear();
             return result;
+        }
+        else if (Arrays.asList(EmulatorConstants.heap).contains(tokens.getFirst())) {
+            AssemblyHeap.heap(tokens, index, registers, heap);
         }
         if (tokens.getFirst().equals("ecall")) {
             print(tokens.get(1));
@@ -98,8 +103,6 @@ public class AssemblyEmulator implements EmulatorConstants {
         tokens.clear();
         return -1;
     }
-
-
     private void print(String s) throws Exception {
         if (!s.matches("x\\d+"))
             throw new Exception("Invalid register number");
@@ -110,6 +113,7 @@ public class AssemblyEmulator implements EmulatorConstants {
             tokens.set(i,tokens.get(i).replaceAll("sp", "x2"));
             tokens.set(i,tokens.get(i).replaceAll("ra", "x1"));
             tokens.set(i,tokens.get(i).replaceAll("zero", "x0"));
+            tokens.set(i,tokens.get(i).replaceAll("gp", "x3"));
         }
     }
 

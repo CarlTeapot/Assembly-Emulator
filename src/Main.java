@@ -7,6 +7,7 @@ public class Main {
         System.out.println("X0: Zero register");
         System.out.println("X1: Return address register");
         System.out.println("X2: Stack pointer register");
+        System.out.println("X3: Global pointer register");
         System.out.println("Beware, if you separate instructions with empty lines, the emulator will work fine \n" +
                 "but if your code has a problem and exception is thrown, the numbering of the lines will be incorrect" +
                 "(it may tell you that program crashed because of line 23, but in reality it is line 30");
