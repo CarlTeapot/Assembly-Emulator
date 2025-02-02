@@ -4,8 +4,6 @@ import constants.EmulatorConstants;
 import patternmatching.CPU_RAMPatternMatching;
 import records.Result;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class AssemblyStore implements EmulatorConstants {
     public static void store(ArrayList<String> tokens, int[] registers, byte[] stack,

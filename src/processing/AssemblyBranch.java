@@ -14,51 +14,52 @@ public class AssemblyBranch {
         BranchPatternMatching.checkInstruction(tokens, labels, index);
         switch (branch) {
             case "beq" -> {
-                return beq(registers, tokens,labels, index);
+                return beq(registers, tokens,labels);
             }
             case "bne" -> {
-                return bne(registers, tokens,labels, index);
+                return bne(registers, tokens,labels);
             }
             case "blt" -> {
-                return blt(registers, tokens,labels, index);
+                return blt(registers, tokens,labels);
             }
             case "ble" -> {
-                return ble(registers, tokens,labels, index);
+                return ble(registers, tokens,labels);
             }
             case "bge" -> {
-                return bge(registers, tokens,labels, index);
+                return bge(registers, tokens,labels);
             }
             case "bgt" -> {
-                return bgt(registers, tokens,labels, index);
+                return bgt(registers, tokens,labels);
             }
         }
         // this will never happen
         return -1;
     }
-    private static int beq(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels, int index) throws Exception {
+    private static int beq(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels) {
         int newIndex = -1;
         if (registers[extractRegister(tokens.get(1))] == registers[extractRegister(tokens.get(2))]) {
              newIndex = labels.get(tokens.get(3));
         }
         return newIndex;
     }
-    private static int bne(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels, int index) throws Exception {
+    private static int bne(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels){
         int newIndex = -1;
         if (registers[extractRegister(tokens.get(1))] != registers[extractRegister(tokens.get(2))]) {
              newIndex = labels.get(tokens.get(3));
         }
         return newIndex;
     }
-    private static int blt(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels, int index) throws Exception {
+    private static int blt(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels) {
         int newIndex = -1;
 
         if (registers[extractRegister(tokens.get(1))] < registers[extractRegister(tokens.get(2))]) {
+
             newIndex = labels.get(tokens.get(3));
         }
         return newIndex;
 
     }
-    private static int bgt(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels, int index) throws Exception {
+    private static int bgt(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels) {
         int newIndex = -1;
         if (registers[extractRegister(tokens.get(1))] > registers[extractRegister(tokens.get(2))]) {
             newIndex = labels.get(tokens.get(3));
@@ -67,7 +68,7 @@ public class AssemblyBranch {
 
     }
 
-    private static int bge(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels, int index) throws Exception {
+    private static int bge(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels){
         int newIndex = -1;
         if (registers[extractRegister(tokens.get(1))] >= registers[extractRegister(tokens.get(2))]) {
             newIndex = labels.get(tokens.get(3));
@@ -75,7 +76,7 @@ public class AssemblyBranch {
         return newIndex;
 
     }
-    private static int ble(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels, int index) throws Exception {
+    private static int ble(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels){
         int newIndex = -1;
         if (registers[extractRegister(tokens.get(1))] <= registers[extractRegister(tokens.get(2))]) {
             newIndex = labels.get(tokens.get(3));

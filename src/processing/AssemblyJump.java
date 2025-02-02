@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class AssemblyJump {
-    public static int processJump(ArrayList<String> tokens, int index, int[] registers, Map<String,Integer> labels) {
+    public static int processJump(ArrayList<String> tokens, int index, int[] registers, Map<String, Integer> labels) {
         if (tokens.size() <= 1)
             throw new IllegalArgumentException("Invalid number of arguments for " + tokens.get(0));
         if (!(labels.containsKey(tokens.get(1)) || tokens.get(1).matches("x\\d+")))
@@ -21,23 +21,25 @@ public class AssemblyJump {
         }
         return -1;
     }
-    private static int j(ArrayList<String> tokens, int[] registers, Map<String,Integer> labels) {
+
+    private static int j(ArrayList<String> tokens, int[] registers, Map<String, Integer> labels) {
         if (tokens.size() != 2) {
             throw new IllegalArgumentException("Invalid number of arguments for " + tokens.getFirst() + ". expected 2, got " + tokens.size());
         }
         return stuff(tokens, registers, labels);
 
     }
-    private static int call(ArrayList<String> tokens, int index, int[] registers, Map<String,Integer> labels) {
+
+    private static int call(ArrayList<String> tokens, int index, int[] registers, Map<String, Integer> labels) {
         if (tokens.size() != 2) {
             throw new IllegalArgumentException("Invalid number of arguments for " + tokens.getFirst() + ". expected 2, got " + tokens.size());
         }
-        registers[1] = index+1;
+        registers[1] = index + 1;
         return stuff(tokens, registers, labels);
     }
 
     private static int stuff(ArrayList<String> tokens, int[] registers, Map<String, Integer> labels) {
-        int x = 0;
+        int x;
         if (tokens.get(1).matches("x\\d+")) {
             x = registers[extractRegister(tokens.get(1))];
         } else if (tokens.get(1).matches("\\d+\\((x\\d+)\\)")) {

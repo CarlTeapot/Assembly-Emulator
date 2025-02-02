@@ -7,7 +7,7 @@ public record Result(int register, int pointer){
     public int register() {
         return register;
     }
-};
+}
 
-;
+
 
