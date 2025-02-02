@@ -1,7 +1,5 @@
 package patternmatching;
-
 import records.Result;
-
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +25,6 @@ public class CPU_RAMPatternMatching {
         }
         return new Result(register, pointer);
     }
-
      public static boolean checkPattern(String s, String pattern2) {
         String regex = "";
         if (pattern2.equals("(")) {

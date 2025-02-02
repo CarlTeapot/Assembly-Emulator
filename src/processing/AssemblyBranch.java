@@ -1,13 +1,12 @@
 package processing;
 
 import patternmatching.BranchPatternMatching;
-import records.BranchResult;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 public class AssemblyBranch {
-    public static BranchResult Branch(ArrayList<String> tokens, int[] registers, Map<String,Integer> labels, int index) throws Exception {
+    public static int Branch(ArrayList<String> tokens, int[] registers, Map<String,Integer> labels, int index) throws Exception {
         String branch = tokens.getFirst();
         if (tokens.size() != 4) {
             throw new Exception("line: " + index + ": Invalid number of arguments for " + tokens.getFirst() + ". expected 3, got " + tokens.size());
@@ -34,54 +33,54 @@ public class AssemblyBranch {
             }
         }
         // this will never happen
-        return new BranchResult(0);
+        return -1;
     }
-    private static BranchResult beq(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels, int index) throws Exception {
+    private static int beq(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels, int index) throws Exception {
         int newIndex = -1;
         if (registers[extractRegister(tokens.get(1))] == registers[extractRegister(tokens.get(2))]) {
              newIndex = labels.get(tokens.get(3));
         }
-        return new BranchResult(newIndex);
+        return newIndex;
     }
-    private static BranchResult bne(int[] registers, ArrayList<String> tokens,Map<String,Integer> labels, int index) throws Exception {
+    private static int bne(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels, int index) throws Exception {
         int newIndex = -1;
         if (registers[extractRegister(tokens.get(1))] != registers[extractRegister(tokens.get(2))]) {
              newIndex = labels.get(tokens.get(3));
         }
-        return new BranchResult(newIndex);
+        return newIndex;
     }
-    private static BranchResult blt(int[] registers, ArrayList<String> tokens,Map<String,Integer> labels, int index) throws Exception {
+    private static int blt(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels, int index) throws Exception {
         int newIndex = -1;
 
         if (registers[extractRegister(tokens.get(1))] < registers[extractRegister(tokens.get(2))]) {
             newIndex = labels.get(tokens.get(3));
         }
-        return new BranchResult(newIndex);
+        return newIndex;
 
     }
-    private static BranchResult bgt(int[] registers, ArrayList<String> tokens,Map<String,Integer> labels, int index) throws Exception {
+    private static int bgt(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels, int index) throws Exception {
         int newIndex = -1;
         if (registers[extractRegister(tokens.get(1))] > registers[extractRegister(tokens.get(2))]) {
             newIndex = labels.get(tokens.get(3));
         }
-        return new BranchResult(newIndex);
+        return newIndex;
 
     }
 
-    private static BranchResult bge(int[] registers, ArrayList<String> tokens,Map<String,Integer> labels, int index) throws Exception {
+    private static int bge(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels, int index) throws Exception {
         int newIndex = -1;
         if (registers[extractRegister(tokens.get(1))] >= registers[extractRegister(tokens.get(2))]) {
             newIndex = labels.get(tokens.get(3));
         }
-        return new BranchResult(newIndex);
+        return newIndex;
 
     }
-    private static BranchResult ble(int[] registers, ArrayList<String> tokens,Map<String,Integer> labels, int index) throws Exception {
+    private static int ble(int[] registers, ArrayList<String> tokens, Map<String,Integer> labels, int index) throws Exception {
         int newIndex = -1;
         if (registers[extractRegister(tokens.get(1))] <= registers[extractRegister(tokens.get(2))]) {
             newIndex = labels.get(tokens.get(3));
         }
-        return new BranchResult(newIndex);
+        return  newIndex;
     }
 
 

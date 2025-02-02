@@ -1,9 +1,5 @@
 import constants.EmulatorConstants;
-import processing.AssemblyALU;
-import processing.AssemblyBranch;
-import processing.AssemblyLoad;
-import processing.AssemblyStore;
-import records.BranchResult;
+import processing.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -43,9 +39,6 @@ public class AssemblyEmulator implements EmulatorConstants {
         } catch (IOException e) {
             System.err.println("Error reading the file: " + e.getMessage());
         }
-
-    }
-    public void process() throws Exception {
         for (int i = 0; i < instructions.size();i++) {
             st = new StringTokenizer(instructions.get(i), " ");
             while(st.hasMoreTokens()) {
@@ -56,39 +49,48 @@ public class AssemblyEmulator implements EmulatorConstants {
             }
             tokens.clear();
         }
+    }
+    public void process() throws Exception {
         int i = 0;
         while (i != instructions.size()) {
-            System.out.println(instructions.get(i));
-            processSingleLine(instructions.get(i), i);
-            i++;
+            int x = processSingleLine(instructions.get(i), i);
+            if (x == -1) i++;
+            else i = x;
         }
-
     }
-
-    private void processSingleLine(String s, int index) throws Exception {
+    private int processSingleLine(String s, int index) throws Exception {
         st = new StringTokenizer(s, " ");
         while(st.hasMoreTokens()) {
             tokens.add(st.nextToken());
         }
         replaceRegisters(tokens);
-        BranchResult result;
+        int result;
         if (Arrays.asList(load).contains(tokens.getFirst()))
             AssemblyLoad.load(tokens,registers,stack,index+1);
         else if (Arrays.asList(store).contains(tokens.getFirst()))
             AssemblyStore.store(tokens,registers,stack,index+1);
         else if (Arrays.asList(alu).contains(tokens.getFirst()))
             AssemblyALU.arithmetic(tokens,registers, index+1);
-        else if (Arrays.asList(branch).contains(tokens.getFirst()))
-           result = AssemblyBranch.Branch(tokens,registers, labels,index+1);
-        else if (tokens.getFirst().equals("print")) {
+        else if (Arrays.asList(branch).contains(tokens.getFirst())) {
+            result = AssemblyBranch.Branch(tokens, registers, labels, index + 1);
+            tokens.clear();
+            return result;
+        }
+        else if (Arrays.asList(jumps).contains(tokens.getFirst())) {
+            result = AssemblyJump.processJump(tokens, index + 1, registers, labels);
+            tokens.clear();
+            return result;
+        }
+        if (tokens.getFirst().equals("print")) {
             print(tokens.get(1));
         }
+        if (tokens.getFirst().equals("ret")) {
+            tokens.clear();
+            return registers[ra]; //return address
+        }
         tokens.clear();
+        return -1;
     }
-
-
-
-
 
 
     private void print(String s) throws Exception {
@@ -111,7 +113,7 @@ public class AssemblyEmulator implements EmulatorConstants {
         return stack[index];
     }
     public byte getStackValue() {
-        return stack[registers[2]];
+        return stack[registers[sp]];
     }
 
 

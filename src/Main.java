@@ -8,16 +8,12 @@ public class Main {
         System.out.println("X1: Return address register");
         System.out.println("X2: Stack pointer register");
         System.out.println("Beware, if you separate instructions with empty lines, the emulator will work fine \n" +
-                "but if your code has a problem and exception is thrown, the numering of the lines will be incorrect" +
+                "but if your code has a problem and exception is thrown, the numbering of the lines will be incorrect" +
                 "(it may tell you that program crashed because of line 23, but in reality it is line 30");
 
-        AssemblyEmulator emulator = new AssemblyEmulator("src/instructions.txt", 5001);
+        AssemblyEmulator emulator = new AssemblyEmulator("Jump_test.txt", 5001);
         emulator.process();
-
         int sp = emulator.getRegisterValue(2);
-
-
         emulator.printAllRegisters();
-        emulator.printLabels();
     }
 }

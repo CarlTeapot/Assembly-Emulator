@@ -1,0 +1,6 @@
+li x10, 5
+li x11, 4
+li x12, 1
+bge x10, x11, equal_label
+li x12 2
+equal_label:

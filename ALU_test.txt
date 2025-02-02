@@ -21,5 +21,4 @@
     sw x16, 16(sp)       # Store word from x16 into memory at sp + 16
     sw x17, 20(sp)       # Store word from x17 into memory at sp + 20
     sw x18, 24(sp)       # Store word from x18 into memory at sp + 24
-    print x12
     addi sp, sp, 32      # Restore stack pointer
