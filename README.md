@@ -1,6 +1,6 @@
 Assembly Emulator.
 
-Hello, this is my RISC-VI Assembly Emulator project using plain java. 
+Hello, this is my RISC-V Assembly Emulator project using plain java. 
 
 Tutorial:  write your Risc-V assembly code in a .txt file and the desired stack size. then run the program and enter the full path of the of the file in the console.
 it will output values written in all of the registers at the end of the code. 
